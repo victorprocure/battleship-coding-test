@@ -20,10 +20,7 @@ namespace Battleship.CLI.Engine
 
         public void Begin()
         {
-            if (this.Round.RequiredPlayers != 0 && this.Players.Count < this.Round.RequiredPlayers)
-            {
-                throw new RequiredPlayersMissingException();
-            }
+            this.BeginRound();
 
             while (this.Round.HasNext && !this.Round.Complete)
             {
@@ -49,6 +46,19 @@ namespace Battleship.CLI.Engine
             }
 
             this.Players.Add(new Player(name));
+        }
+
+        private void BeginRound()
+        {
+            if (this.Players.Count < this.Round.RequiredPlayers)
+            {
+                throw new RequiredPlayersMissingException();
+            }
+
+            if (this.Round.RequiredPlayers != 0)
+            {
+                this.Round.Initialize(this.Players);
+            }
         }
     }
 }
