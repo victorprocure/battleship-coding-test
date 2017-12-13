@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Battleship
+namespace Battleship.CLI
 {
     class Program
     {
