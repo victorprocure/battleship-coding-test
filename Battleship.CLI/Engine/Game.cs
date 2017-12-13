@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Battleship.CLI.Exceptions;
+using Battleship.CLI.Layout;
 
 namespace Battleship.CLI.Engine
 {
@@ -10,12 +11,15 @@ namespace Battleship.CLI.Engine
 
         public IList<Player> Players { get; }
 
+        public IBoard Board { get; }
+
         public bool Complete { get; private set; }
 
-        public Game(IRound round)
+        public Game(IRound round, IBoard board)
         {
             this.Round = round;
             this.Players = new List<Player>();
+            this.Board = board;
         }
 
         public void Begin()

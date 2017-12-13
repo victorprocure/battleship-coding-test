@@ -4,6 +4,7 @@ using Battleship.CLI.Engine;
 using Battleship.CLI.Exceptions;
 using System.Linq;
 using System;
+using Battleship.CLI.Layout;
 
 namespace Battleship.Tests.Engine
 {
@@ -13,10 +14,11 @@ namespace Battleship.Tests.Engine
         public void ShouldCompleteWhenNoMoreRoundsAndRoundComplete()
         {
             var mockRound = new Mock<IRound>();
+            var mockBoard = new Mock<IBoard>();
             mockRound.SetupGet(r => r.HasNext).Returns(false);
             mockRound.SetupGet(r => r.Complete).Returns(true);
 
-            var game = new Game(mockRound.Object);
+            var game = new Game(mockRound.Object, mockBoard.Object);
             game.Begin();
 
             Assert.True(game.Complete);
@@ -25,9 +27,10 @@ namespace Battleship.Tests.Engine
         [Fact]
         public void ShouldVerifyNumberOfPlayersRequiredForRound()
         {
+            var mockBoard = new Mock<IBoard>();
             var mockRound = new Mock<IRound>();
             mockRound.SetupGet(r => r.RequiredPlayers).Returns(2);
-            var game = new Game(mockRound.Object);
+            var game = new Game(mockRound.Object, mockBoard.Object);
 
             Assert.Throws<RequiredPlayersMissingException>(() => game.Begin());
         }
@@ -53,7 +56,8 @@ namespace Battleship.Tests.Engine
         private Game GetDefaultGame()
         {
             var mockRound = new Mock<IRound>();
-            var game = new Game(mockRound.Object);
+            var mockBoard = new Mock<IBoard>();
+            var game = new Game(mockRound.Object, mockBoard.Object);
             return game;
         }
     }
