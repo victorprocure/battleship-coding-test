@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Battleship.CLI.Ships;
-using System.Drawing;
 
 namespace Battleship.CLI.Layout
 {
@@ -8,17 +7,16 @@ namespace Battleship.CLI.Layout
     {
         IList<IBattleship> Ships { get; }
 
-        Size Size { get; }
+        IList<string> ColumnHeaders { get; }
+        IList<string> RowHeaders { get; }
 
         int HorizontalTiles { get; }
         int VerticalTiles { get; }
 
-        int TileWidth { get; }
-        int TileHeight { get; }
-
         void AddShip(IBattleship ship);
+        
         void Initialize();
 
-        string DrawBoard();
+        Tile GetTile(string coordinates);
     }
 }
