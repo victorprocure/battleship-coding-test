@@ -39,5 +39,17 @@ namespace Battleship.Tests.Layout
 
             Assert.NotNull(b);
         }
+
+        [Fact]
+        public void GivenAShipBeingPlacedShouldNotConflictWithAnotherAlreadyPlaced()
+        {
+
+        }
+
+        [Fact]
+        public void GivenOnePlayerShouldNotSeeAnotherPlayersShips()
+        {
+            
+        }
     }
 }
