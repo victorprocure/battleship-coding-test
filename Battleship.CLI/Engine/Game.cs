@@ -9,8 +9,8 @@ namespace Battleship.CLI.Engine
 {
     public class Game
     {
-        public IRound Round { get; }
-        
+        public IRound Round { get; private set; }
+
         public bool Complete { get; private set; }
 
         private IPlayerManager playerManager;
@@ -27,13 +27,33 @@ namespace Battleship.CLI.Engine
         public void Begin()
         {
             this.BeginRound();
+        }
 
-            while (this.Round.HasNext && !this.Round.Complete)
+        public void Tick()
+        {
+            if (this.Round.Complete && this.Round.HasNext)
             {
-                this.Complete = false;
+                this.Round = this.Round.Next();
+                this.BeginRound();
+            }
+            else
+            {
+                this.Round.Tick();
             }
 
-            this.Complete = true;
+
+            var defeat = this.playerManager.CheckDefeats();
+            if (defeat != null)
+            {
+                this.Complete = true;
+
+                this.responseManager.SendMessage($"{defeat.Name}: you sunk my battleship");
+            }
+            else
+            {
+                this.Complete = false;
+
+            }
         }
 
         private void BeginRound()
@@ -43,10 +63,7 @@ namespace Battleship.CLI.Engine
                 throw new RequiredPlayersMissingException();
             }
 
-            if (this.Round.RequiredPlayers != 0)
-            {
-                this.Round.Initialize(this.playerManager);
-            }
+            this.Round.Initialize(this.playerManager, this.responseManager);
         }
     }
 }

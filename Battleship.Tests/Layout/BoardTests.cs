@@ -44,6 +44,18 @@ namespace Battleship.Tests.Layout
         }
 
         [Fact]
+        public void ShouldAllowShipToBePlaced()
+        {
+            var board = new Board(9);
+            var mockShip = new Mock<IBattleship>();
+            mockShip.SetupGet(s => s.Size).Returns(new Size(1,3));
+
+            board.AddShip("A1", mockShip.Object);
+
+            Assert.NotNull(board.GetTile("A2").Ship);
+        }
+
+        [Fact]
         public void ShouldNotAllowShipToBePlacedOutOfBounds()
         {
             var board = new Board(9);

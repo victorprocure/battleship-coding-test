@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Battleship.CLI.Actors;
 using Battleship.CLI.Engine;
@@ -15,25 +16,53 @@ namespace Battleship.CLI.Rounds
         private bool complete = false;
 
         private IPlayerManager playerManager;
+        private IResponseManager responseManager;
 
-        public void Initialize(IPlayerManager playerManager)
+        public void Initialize(IPlayerManager playerManager, IResponseManager responseManager)
         {
+            this.responseManager = responseManager;
             this.playerManager = playerManager;
+            responseManager.SendMessage("Welcome to Battleship");
 
-            this.Loop();
+            this.Tick();
         }
 
-        private void Loop()
+        public void Tick()
         {
-            while(!complete)
-            {
-
-            }
+            this.responseManager.PoseQuestion("How Many Players? (2): ", this.AddPlayers);
         }
 
         public IRound Next()
         {
-            throw new System.NotImplementedException();
+            return new ShipPlacementRound();
+        }
+
+        private void AddPlayers(string num)
+        {
+            var numPlayers = 2;
+            if (!string.IsNullOrWhiteSpace(num))
+            {
+                numPlayers = Convert.ToInt32(num);
+            }
+
+            for (int i = 0; i < numPlayers; i++)
+            {
+                this.responseManager.PoseQuestion($"Player {i + 1} please enter your name: (Player {i + 1})", this.CreatePlayer);
+            }
+
+            this.complete = true;
+        }
+
+        private void CreatePlayer(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                this.playerManager.AddPlayer();
+            }
+            else
+            {
+                this.playerManager.AddPlayer(name);
+            }
         }
     }
 }

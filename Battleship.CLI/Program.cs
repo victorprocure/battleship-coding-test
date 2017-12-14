@@ -18,9 +18,11 @@ namespace Battleship.CLI
             var game = new Game(playerManager, initialRound, responseManager);
 
             var hardClose = false;
-            Console.WriteLine("Battleship!");
+            game.Begin();
             while (!game.Complete && !hardClose)
             {
+                game.Tick();
+                
                 if (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey(true);

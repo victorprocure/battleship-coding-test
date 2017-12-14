@@ -23,6 +23,11 @@ namespace Battleship.CLI.Layout
             this.Ship = ship;
         }
 
+        public void RemoveShip()
+        {
+            this.Ship = null;
+        }
+
         public void FireAt()
         {
             if(this.Ship != null)

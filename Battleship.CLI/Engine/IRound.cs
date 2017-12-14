@@ -7,6 +7,8 @@ namespace Battleship.CLI.Engine
     {
         int RequiredPlayers { get; }
 
-        void Initialize(IPlayerManager playerManager);
+        void Initialize(IPlayerManager playerManager, IResponseManager responseManager);
+
+        void Tick();
     }
 }

@@ -10,6 +10,8 @@ namespace Battleship.CLI.Actors
         IPlayer this[IPlayer player] { get; }
         int Count {get;}
 
+        IPlayer CheckDefeats();
+
         void AddPlayer();
 
         void AddPlayer(string name);

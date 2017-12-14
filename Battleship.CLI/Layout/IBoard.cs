@@ -8,9 +8,12 @@ namespace Battleship.CLI.Layout
     {
         IList<string> ColumnHeaders { get; }
         IList<string> RowHeaders { get; }
+        TileCollection TileCollection {get;}
         Point Size { get; }
 
         void AddShip(string coordinates, IBattleship ship);
+
+        void MoveShip(string coordinates, IBattleship ship);
 
         Tile GetTile(string coordinates);
     }

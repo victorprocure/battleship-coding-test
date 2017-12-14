@@ -14,6 +14,8 @@ namespace Battleship.CLI.Ships
 
         bool Destroyed {get;}
 
+        IPlayer Owner {get;set;}
+
         void FlipOrientation();
 
         void DamageTaken(int amount);

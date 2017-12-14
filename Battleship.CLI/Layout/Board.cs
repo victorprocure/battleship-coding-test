@@ -13,6 +13,8 @@ namespace Battleship.CLI.Layout
         public IList<string> ColumnHeaders { get; private set; }
         public IList<string> RowHeaders { get; private set; }
 
+        public TileCollection TileCollection => tileCollection;
+
         public Point Size => new Point(this.numberOfHorizontalTiles, this.numberOfVerticalTiles);
 
         private TileCollection tileCollection;
@@ -44,12 +46,12 @@ namespace Battleship.CLI.Layout
             var colCount = this.numberOfHorizontalTiles - ship.Size.Width;
             var rowCount = this.numberOfVerticalTiles - ship.Size.Height;
 
-            var x = (tileIndex.X + ship.Size.Width).Clamp(colCount, 0);
-            var y = (tileIndex.Y + ship.Size.Height).Clamp(rowCount, 0);
+            var x = (tileIndex.X).Clamp(colCount, 0);
+            var y = (tileIndex.Y).Clamp(rowCount, 0);
 
             var shipTiles = from Tile tile in this.tileCollection
                             where tile.Location.X >= x && tile.Location.X < x + ship.Size.Width &&
-                                tile.Location.Y >= y && tile.Location.Y < x + ship.Size.Height
+                                tile.Location.Y >= y && tile.Location.Y < y + ship.Size.Height
                             select tile;
 
             foreach (var tile in shipTiles)
@@ -57,6 +59,14 @@ namespace Battleship.CLI.Layout
                 tile.AddShip(ship);
             }
 
+        }
+
+        public void MoveShip(string coordinates, IBattleship ship) {
+            foreach(var tile in this.tileCollection){
+                tile.RemoveShip();
+            }
+
+            this.AddShip(coordinates, ship);
         }
 
         public Tile GetTile(string coordinates)

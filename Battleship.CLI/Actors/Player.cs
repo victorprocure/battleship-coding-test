@@ -6,13 +6,15 @@ using Battleship.CLI.Ships;
 
 namespace Battleship.CLI.Actors
 {
-    public class Player: IPlayer
+    public class Player : IPlayer
     {
         public string Name { get; }
 
+        public bool Defeated { get; set; }
+
         public IBoard Board => boardManager[this];
 
-        public IList<PlayerEvent> Events {get;}
+        public IList<PlayerEvent> Events { get; }
 
         private IBoardManager boardManager;
 
@@ -22,12 +24,13 @@ namespace Battleship.CLI.Actors
 
             boardManager.CreateBoard(this);
             this.boardManager = boardManager;
-            
+
             this.Events = new List<PlayerEvent>();
         }
 
         public void CreateBattleship(string coordinates, IBattleship ship)
         {
+            ship.Owner = this;
             this.Board.AddShip(coordinates, ship);
         }
 

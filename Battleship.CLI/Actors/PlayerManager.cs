@@ -26,6 +26,14 @@ namespace Battleship.CLI.Actors
             this.players = new List<IPlayer>();
         }
 
+
+        public IPlayer CheckDefeats()
+        {
+            var defeatedPlayer = this.players.SingleOrDefault(p => p.Defeated);
+
+            return defeatedPlayer;
+        }
+
         public void AddPlayer()
         {
             var nextNumber = this.players.Count + 1;
