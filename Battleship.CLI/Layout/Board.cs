@@ -10,93 +10,112 @@ namespace Battleship.CLI.Layout
 {
     public class Board : IBoard
     {
-        public IList<IBattleship> Ships { get; }
-
         public IList<string> ColumnHeaders { get; private set; }
         public IList<string> RowHeaders { get; private set; }
 
-        public int HorizontalTiles { get; }
-
-        public int VerticalTiles { get; }
-
-        private Tile[,] tiles;
-
-
-        public Board(int numberOfTiles) : this()
+        public Point Size
         {
-            this.HorizontalTiles = numberOfTiles;
-            this.VerticalTiles = numberOfTiles;
+            get
+            {
+                return new Point(this.numberOfHorizontalTiles, this.numberOfVerticalTiles);
+            }
         }
 
-        public Board(int verticalTiles, int horizontalTiles) : this(verticalTiles)
-        {
-            this.HorizontalTiles = horizontalTiles;
-        }
+        private TileCollection tileCollection;
+        private IList<IBattleship> ships;
 
-        public Board()
+        private readonly int headerPadding = 1;
+        private int numberOfHorizontalTiles;
+        private int numberOfVerticalTiles;
+
+
+        public Board(int numberOfTiles) : this(numberOfTiles, numberOfTiles) { }
+
+        public Board(int verticalTiles, int horizontalTiles)
         {
-            this.Ships = new List<IBattleship>();
+            this.numberOfHorizontalTiles = horizontalTiles - 1;
+            this.numberOfVerticalTiles = verticalTiles - 1;
+
+            this.ships = new List<IBattleship>();
             this.ColumnHeaders = new string[] { string.Empty };
             this.RowHeaders = new string[] { string.Empty };
+
+            this.Initialize();
         }
 
-        public void AddShip(IBattleship ship)
+        public void AddShip(string coordinates, IBattleship ship)
         {
-            throw new NotImplementedException();
-        }
+            var tileIndex = this.GetTileIndex(coordinates);
 
-        public void Initialize()
-        {
-            this.BuildColumnHeaders();
-            this.BuildRowHeaders();
-            this.BuildTiles();
+            var colCount = this.numberOfHorizontalTiles - ship.Size.Width;
+            var rowCount = this.numberOfVerticalTiles - ship.Size.Height;
+
+            var x = (tileIndex.X + ship.Size.Width).Clamp(colCount, 0);
+            var y = (tileIndex.Y + ship.Size.Height).Clamp(rowCount, 0);
+
+            var shipTiles = from Tile tile in this.tileCollection
+                            where tile.Location.X >= x && tile.Location.X < x + ship.Size.Width &&
+                                tile.Location.Y >= y && tile.Location.Y < x + ship.Size.Height
+                            select tile;
+
+            foreach (var tile in shipTiles)
+            {
+                tile.AddShip(ship);
+            }
+
         }
 
         public Tile GetTile(string coordinates)
         {
-            var coordinate = new Coordinate<string, int>(coordinates);
-            var columnIndex = this.ColumnHeaders.IndexOf(coordinate.X) - 1;
-            var rowIndex = this.RowHeaders.IndexOf(coordinate.Y.ToString()) - 1;
-            
-            return this.tiles[columnIndex, rowIndex];
+
+            var tileIndex = this.GetTileIndex(coordinates);
+            return this.tileCollection[tileIndex.X, tileIndex.Y];
         }
 
-        private void BuildTiles()
+        private void Initialize()
         {
-            this.tiles = new Tile[this.HorizontalTiles, this.VerticalTiles];
+            this.BuildColumnHeaders();
+            this.BuildRowHeaders();
+            this.tileCollection = new TileCollection(this.numberOfHorizontalTiles, this.numberOfVerticalTiles);
+        }
 
-            for (int x = 0; x < this.HorizontalTiles; x++)
+        private Point GetTileIndex(string coordinates)
+        {
+            var coordinate = new Coordinate<string, int>(coordinates);
+            var columnIndex = this.ColumnHeaders.IndexOf(coordinate.X) - this.headerPadding;
+            var rowIndex = this.RowHeaders.IndexOf(coordinate.Y.ToString()) - this.headerPadding;
+
+            if (columnIndex == -1 || rowIndex == -1)
             {
-                for (int y = 0; y < this.VerticalTiles; y++)
-                {
-                    this.tiles[x, y] = new Tile(x, y);
-                }
+                throw new IndexOutOfRangeException("Tile was not found");
             }
+
+            return new Point(columnIndex, rowIndex);
         }
 
         private void BuildColumnHeaders()
         {
-            if (this.HorizontalTiles <= 0)
+            if (this.numberOfHorizontalTiles <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(this.HorizontalTiles));
+                throw new ArgumentOutOfRangeException(nameof(this.numberOfHorizontalTiles));
             }
 
             this.ColumnHeaders = this.ColumnHeaders.Concat(Enumerable
-                .Range(1, this.HorizontalTiles - 1)
+                .Range(1, this.numberOfHorizontalTiles)
                 .Select(n => n.ToAlphabetLetter()))
                 .ToList();
         }
 
         private void BuildRowHeaders()
         {
-            if (this.VerticalTiles <= 0)
+            if (this.numberOfVerticalTiles <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(this.VerticalTiles));
+                throw new ArgumentOutOfRangeException(nameof(this.numberOfVerticalTiles));
             }
 
             this.RowHeaders = this.RowHeaders
                 .Concat(Enumerable
-                        .Range(1, this.VerticalTiles - 1)
+                        .Range(1, this.numberOfVerticalTiles)
                         .Select(n => n.ToString())
                 ).ToList();
         }

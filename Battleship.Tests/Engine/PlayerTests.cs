@@ -13,24 +13,22 @@ namespace Battleship.Tests.Engine
         [Fact]
         public void ShouldBeAbleToPlacePieceOnBoard()
         {
+            var coordinate = "A3";
+            Player tPlayer = null;
+
             var mockBoard = new Mock<IBoard>();
-            var ships = new List<IBattleship>();
-            mockBoard.SetupGet(b=>b.Ships).Returns(ships);
-            mockBoard.Setup(s => s.AddShip(It.IsAny<IBattleship>())).Callback<IBattleship>((s) => ships.Add(s));
+            mockBoard.Setup(b=>b.AddShip(It.IsAny<string>(), It.IsAny<IBattleship>()));
+
             var mockShip = new Mock<IBattleship>();
+            mockShip.SetupSet(s => s.Owner = It.IsAny<Player>()).Callback<Player>(p =>tPlayer = p);
+            var player = new Player("Player", mockBoard.Object);
 
-            Player p = new Player("test");
-            Rectangle r = new Rectangle();
-            mockShip.SetupSet(s => s.Owner = It.IsAny<Player>()).Callback<Player>(e => p = e);
-            mockShip.SetupSet(s => s.Shape = It.IsAny<Rectangle>()).Callback<Rectangle>(e => r = e);
-            var player = new Player("Player");
+            player.CreateBattleship(coordinate, mockShip.Object);
 
-            var location = new Point(2, 3);
-            player.AddBattleship(location, mockShip.Object, mockBoard.Object);
-
-            Assert.Equal(p, player);
-            Assert.Equal(r.Location, location);
-            Assert.Contains(mockShip.Object, mockBoard.Object.Ships);
+            mockBoard.Verify(b =>
+                b.AddShip(It.IsAny<string>(), It.IsAny<IBattleship>()), Times.AtLeastOnce());
+            Assert.Equal(player, tPlayer);
         }
+
     }
 }

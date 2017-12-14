@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using Battleship.CLI.Exceptions;
 using Battleship.CLI.Layout;
 
@@ -11,16 +12,22 @@ namespace Battleship.CLI.Engine
 
         public IList<Player> Players { get; }
 
-        public IBoard Board { get; }
-
         public bool Complete { get; private set; }
 
-        public Game(IRound round, IBoard board)
+        private Point boardSize;
+
+        public Game(IRound round) : this(round, new Point(9, 9))
         {
             this.Round = round;
             this.Players = new List<Player>();
-            this.Board = board;
         }
+
+        public Game(IRound round, Point boardSize)
+        {
+            this.boardSize = boardSize;
+        }
+
+        public Game(IRound round, int boardSize): this(round, new Point(boardSize,boardSize)) { }
 
         public void Begin()
         {
@@ -49,7 +56,7 @@ namespace Battleship.CLI.Engine
                 throw new ArgumentNullException(nameof(name));
             }
 
-            this.Players.Add(new Player(name));
+            this.Players.Add(new Player(name, new Board(this.boardSize.Y, this.boardSize.X)));
         }
 
         private void BeginRound()

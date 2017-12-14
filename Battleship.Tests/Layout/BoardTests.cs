@@ -1,6 +1,9 @@
+using System;
 using System.Drawing;
 using System.Linq;
 using Battleship.CLI.Layout;
+using Battleship.CLI.Ships;
+using Moq;
 using Xunit;
 
 namespace Battleship.Tests.Layout
@@ -12,8 +15,6 @@ namespace Battleship.Tests.Layout
         {
             var board = new Board(9);
 
-            board.Initialize();
-
             Assert.Equal(9, board.ColumnHeaders.Count());
         }
 
@@ -21,8 +22,6 @@ namespace Battleship.Tests.Layout
         public void GivenTileNumberShouldCreateRowHeaders()
         {
             var board = new Board(9);
-
-            board.Initialize();
 
             Assert.Equal(9, board.RowHeaders.Count());
         }
@@ -32,8 +31,6 @@ namespace Battleship.Tests.Layout
         {
             var board = new Board(9);
 
-            board.Initialize();
-
             Assert.Equal(string.Empty, board.ColumnHeaders.First());
         }
 
@@ -42,33 +39,19 @@ namespace Battleship.Tests.Layout
         {
             var board = new Board(9);
 
-            board.Initialize();
-
             Assert.Equal(string.Empty, board.RowHeaders.First());
         }
 
         [Fact]
-        public void TileShouldBeAccessibleByCoordinate()
+        public void ShouldNotAllowShipToBePlacedOutOfBounds()
         {
             var board = new Board(9);
+            var mockShip = new Mock<IBattleship>();
+            mockShip.SetupGet(s => s.Size).Returns(new Size(1,3));
 
-            board.Initialize();
-            var tile = board.GetTile("A2");
+            board.AddShip("H8", mockShip.Object);
 
-            Assert.Equal(new Point(0, 1), tile.Location);
-
-        }
-
-        [Fact]
-        public void GivenAShipBeingPlacedShouldNotConflictWithAnotherAlreadyPlaced()
-        {
-            Assert.True(false);
-        }
-
-        [Fact]
-        public void GivenOnePlayerShouldNotSeeAnotherPlayersShips()
-        {
-            Assert.True(false);
+            Assert.NotNull(board.GetTile("H6").Ship);
         }
     }
 }
