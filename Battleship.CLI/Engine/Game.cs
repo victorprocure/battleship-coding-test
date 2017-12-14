@@ -54,6 +54,10 @@ namespace Battleship.CLI.Engine
                 this.Complete = false;
 
             }
+
+            if(this.Round.Complete && !this.Round.HasNext) {
+                this.Complete = true;
+            }
         }
 
         private void BeginRound()
@@ -64,6 +68,8 @@ namespace Battleship.CLI.Engine
             }
 
             this.Round.Initialize(this.playerManager, this.responseManager);
+
+            this.Tick();
         }
     }
 }

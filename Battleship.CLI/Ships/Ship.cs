@@ -36,7 +36,7 @@ namespace Battleship.CLI.Ships
         {
             this.hits += amount;
 
-            if (this.Destroyed)
+            if (this.Destroyed && this.owner != null)
             {
                 this.owner.Defeated = true;
             }
