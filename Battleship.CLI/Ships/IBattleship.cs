@@ -8,8 +8,14 @@ namespace Battleship.CLI.Ships
     {
         string Name { get; }
 
+        int Hitpoints { get; }
+
         Size Size { get; }
 
+        bool Destroyed {get;}
+
         void FlipOrientation();
+
+        void DamageTaken(int amount);
     }
 }

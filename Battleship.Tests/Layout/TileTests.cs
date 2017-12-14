@@ -1,3 +1,4 @@
+using System.Drawing;
 using Battleship.CLI.Layout;
 using Battleship.CLI.Ships;
 using Moq;
@@ -28,6 +29,18 @@ namespace Battleship.Tests.Layout
             tile.FireAt();
 
             Assert.Equal(TileStatus.Missed, tile.Status);
+        }
+
+        [Fact]
+        public void GivenTileIsHitShouldDamageShip()
+        {
+            var tile = new Tile();
+            var mockShip = new Moq.Mock<Ship>(new object[]{ "Boat", new Size(1,3)});
+
+            tile.AddShip(mockShip.Object);
+            tile.FireAt();
+
+            Assert.True(mockShip.Object.TakenDamage);
         }
     }
 }

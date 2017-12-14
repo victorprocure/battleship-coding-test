@@ -19,5 +19,15 @@ namespace Battleship.Tests.Ships
             Assert.Equal(3, ship.Size.Width);
             Assert.Equal(1, ship.Size.Height);
         }
+
+        [Fact]
+        public void GivenHeavyDamageTakenShouldBeDestroyed()
+        {
+            var ship = new DestroyerClassVessel();
+
+            ship.DamageTaken(10);
+
+            Assert.True(ship.Destroyed);
+        }
     }
 }

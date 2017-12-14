@@ -28,6 +28,7 @@ namespace Battleship.CLI.Layout
             if(this.Ship != null)
             {
                 this.Status = TileStatus.Hit;
+                this.Ship.DamageTaken(1);
 
                 return;
             }

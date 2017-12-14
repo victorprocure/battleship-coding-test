@@ -14,13 +14,14 @@ namespace Battleship.Tests.Engine
         [Fact]
         public void ShouldCompleteWhenNoMoreRoundsAndRoundComplete()
         {
+            var mockResponseManager = new Mock<ResponseManager>();
             var mockRound = new Mock<IRound>();
             mockRound.SetupGet(r => r.HasNext).Returns(false);
             mockRound.SetupGet(r => r.Complete).Returns(true);
             var playerManager = new Mock<IPlayerManager>();
 
 
-            var game = new Game(playerManager.Object, mockRound.Object);
+            var game = new Game(playerManager.Object, mockRound.Object, mockResponseManager.Object);
             game.Begin();
 
             Assert.True(game.Complete);
@@ -29,12 +30,13 @@ namespace Battleship.Tests.Engine
         [Fact]
         public void ShouldVerifyNumberOfPlayersRequiredForRound()
         {
+            var mockResponseManager = new Mock<ResponseManager>();
             var mockRound = new Mock<IRound>();
             mockRound.SetupGet(r => r.RequiredPlayers).Returns(2);
             var playerManager = new Mock<IPlayerManager>();
 
 
-            var game = new Game(playerManager.Object, mockRound.Object);
+            var game = new Game(playerManager.Object, mockRound.Object, mockResponseManager.Object);
 
             Assert.Throws<RequiredPlayersMissingException>(() => game.Begin());
         }
@@ -42,8 +44,9 @@ namespace Battleship.Tests.Engine
         private Game GetDefaultGame()
         {
             var mockRound = new Mock<IRound>();
+            var mockResponseManager = new Mock<ResponseManager>();
             var playerManager = new Mock<IPlayerManager>();
-            var game = new Game(playerManager.Object, mockRound.Object);
+            var game = new Game(playerManager.Object, mockRound.Object, mockResponseManager.Object);
             return game;
         }
     }
