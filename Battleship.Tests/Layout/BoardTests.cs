@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Linq;
+using Battleship.CLI.Engine;
 using Battleship.CLI.Layout;
 using Battleship.CLI.Ships;
 using Moq;
@@ -53,5 +54,7 @@ namespace Battleship.Tests.Layout
 
             Assert.NotNull(board.GetTile("H6").Ship);
         }
+
+        
     }
 }

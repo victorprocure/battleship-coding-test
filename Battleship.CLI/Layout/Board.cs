@@ -13,13 +13,7 @@ namespace Battleship.CLI.Layout
         public IList<string> ColumnHeaders { get; private set; }
         public IList<string> RowHeaders { get; private set; }
 
-        public Point Size
-        {
-            get
-            {
-                return new Point(this.numberOfHorizontalTiles, this.numberOfVerticalTiles);
-            }
-        }
+        public Point Size => new Point(this.numberOfHorizontalTiles, this.numberOfVerticalTiles);
 
         private TileCollection tileCollection;
         private IList<IBattleship> ships;

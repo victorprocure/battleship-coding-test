@@ -1,4 +1,5 @@
 using System.Drawing;
+using Battleship.CLI.Actors;
 using Battleship.CLI.Engine;
 
 namespace Battleship.CLI.Ships
@@ -7,8 +8,8 @@ namespace Battleship.CLI.Ships
     {
         string Name { get; }
 
-        Player Owner { get; set; }
+        Size Size { get; }
 
-        Size Size { get; set; }
+        void FlipOrientation();
     }
 }

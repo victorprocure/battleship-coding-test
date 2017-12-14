@@ -5,6 +5,7 @@ using Battleship.CLI.Exceptions;
 using System.Linq;
 using System;
 using Battleship.CLI.Layout;
+using Battleship.CLI.Actors;
 
 namespace Battleship.Tests.Engine
 {
@@ -16,8 +17,10 @@ namespace Battleship.Tests.Engine
             var mockRound = new Mock<IRound>();
             mockRound.SetupGet(r => r.HasNext).Returns(false);
             mockRound.SetupGet(r => r.Complete).Returns(true);
+            var playerManager = new Mock<IPlayerManager>();
 
-            var game = new Game(mockRound.Object);
+
+            var game = new Game(playerManager.Object, mockRound.Object);
             game.Begin();
 
             Assert.True(game.Complete);
@@ -28,45 +31,19 @@ namespace Battleship.Tests.Engine
         {
             var mockRound = new Mock<IRound>();
             mockRound.SetupGet(r => r.RequiredPlayers).Returns(2);
-            var game = new Game(mockRound.Object);
+            var playerManager = new Mock<IPlayerManager>();
+
+
+            var game = new Game(playerManager.Object, mockRound.Object);
 
             Assert.Throws<RequiredPlayersMissingException>(() => game.Begin());
-        }
-
-        [Fact]
-        public void ShouldCreateDefaultNumberedNameForPlayerWhenNoneGiven()
-        {
-            var game = this.GetDefaultGame();
-
-            game.AddPlayer();
-
-            Assert.Contains(game.Players.Count.ToString(), game.Players.First().Name);
-        }
-
-        [Fact]
-        public void ShouldThrowIfAttemptingToAddBlankName()
-        {
-            var game = this.GetDefaultGame();
-
-            Assert.Throws<ArgumentNullException>(() => game.AddPlayer("   "));
-        }
-
-        [Fact]
-        public void GivenAPlayerAddedShouldHaveTheirOwnBoard()
-        {
-            var game = this.GetDefaultGame();
-
-            game.AddPlayer("Test Player");
-            var player = game.Players.First();
-
-            var headerPadding = 1;
-            Assert.Equal(9 - headerPadding, player.Board.Size.X);
         }
 
         private Game GetDefaultGame()
         {
             var mockRound = new Mock<IRound>();
-            var game = new Game(mockRound.Object);
+            var playerManager = new Mock<IPlayerManager>();
+            var game = new Game(playerManager.Object, mockRound.Object);
             return game;
         }
     }

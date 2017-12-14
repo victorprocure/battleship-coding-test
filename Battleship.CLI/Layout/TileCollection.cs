@@ -8,13 +8,7 @@ namespace Battleship.CLI.Layout
 {
     public class TileCollection: IEnumerable<Tile>
     {
-        public Tile this[int colIndex, int rowIndex]
-        {
-            get
-            {
-                return this.tiles[colIndex, rowIndex];
-            }
-        }
+        public Tile this[int colIndex, int rowIndex] => this.tiles[colIndex, rowIndex];
 
         private Tile[,] tiles;
 

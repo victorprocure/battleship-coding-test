@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Battleship.CLI.Actors;
 
 namespace Battleship.CLI.Engine
 {
@@ -6,6 +7,6 @@ namespace Battleship.CLI.Engine
     {
         int RequiredPlayers { get; }
 
-        void Initialize(IList<Player> players);
+        void Initialize(IPlayerManager playerManager);
     }
 }
